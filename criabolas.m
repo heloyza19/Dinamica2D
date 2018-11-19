@@ -15,7 +15,7 @@ for a=1:1:Ne
    
 end
 
-dx=max(Rm);
+dx=1;%max(Rm);
 dy=dx;
 N=ceil((L)/dx);
 M=ceil((H)/dy);
@@ -32,6 +32,7 @@ for b=1:1:Ne
             l=T(1);
             campo{i,j}(l+1,1)=e;  %Número da bola
             campo{i,j}(l+1,2)=b;  %Número do elemento
+            campo{i,j}(l+1,3)=d;  %N aresta
         end
         
     end

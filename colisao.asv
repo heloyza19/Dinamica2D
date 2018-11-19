@@ -169,15 +169,16 @@ end
  writeVideo(v,frame);
  
 end
-
-close(v)
 Mtotal=momento+Mang;
+close(v)
 figure(2)
-plot(times,momento,times,Mang);
-title('Momento');
-legend('Momento linear','Momento angular');
+plot(times,momento,times,Mang,times,Mtotal);
+title('Momento')
+legend('Momento linear','Momento angular', )
 
-figure (3)
+
+
+figure (4)
 box on
 set(gca,'LineWidth',3);
 plot(times,Ek,times,Eelas,times,Ecr, 'LineWidth',3);
@@ -193,7 +194,7 @@ ax = gca;
 ax.FontSize = 15;
 
 Emec=Ek+Ecr+Eelas;
-figure (4)
+figure (5)
 plot(times,Emec);
 title('Energia mecânica');
 xlabel('Times');
