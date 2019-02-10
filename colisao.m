@@ -14,11 +14,8 @@ ang=0:0.1:2*pi;
 Nb=10;                                          % Número de bolas em cada aresta
 
 %Coordenadas dos vértices
-posicao{1,1}=[0.2 1.5;1.2 1.5;1.2 0.5;0.2 0.5];
-posicao{2,1}=[1.4  1;2.4 1; 2.4 2;1.4 2];
-
-
-
+posicao{1,1}=[3.2 2.5;4.2 2.5;4.2 1.0;3.2 1.0];
+posicao{2,1}=[4.4  1.5;5.4 1.5; 5.4 0.5;4.4 0.5];
 
 
 %Dados da dinâmica
@@ -54,10 +51,10 @@ Kn=1000000;                                     %Constante da mola (Normal)
 for d=1:1:Ne
    
     %Determinação do centro de massa, momento de inércia e massa
-  %[Cm(d,1),Cm(d,2),I(d,1),Dados.massa(d,1)]=centromassa(posicao{d,1});
-  Cm=[0.7 1;1.9 1.5];
-  Dados.massa=[1;1];
-  I=[0.1667;0.1667];
+  [Cm(d,1),Cm(d,2),I(d,1),Dados.massa(d,1)]=centromassa(posicao{d,1});
+  %Cm=[0.7 1;1.9 1.5];
+  %Dados.massa=[1;1];
+  %I=[0.1667;0.1667];
   
     %Descrição dos pontos em coordenadas polares 
     %posicao--(raio,teta)
@@ -71,9 +68,9 @@ end
 %determincação do dt
 m=max(Dados.massa);
 tc=2*sqrt(m/Kn);
-e=0.01;
+e=0.005;
 dt=e*tc;
-times = 0 : dt : 0.006;
+times = 0 : dt : 0.01;
 
 set(gca,'nextplot','replacechildren'); 
 v = VideoWriter('simulacao.avi');
@@ -113,6 +110,7 @@ Dados.velocidade(:,2)=Dados.velocidade(:,2)+Acy*dt;
 Cm=Cm+dt*0.5*(K1+K2);
 
 %Cálculo dos momentos
+Mlinear=[0 0];
 momento(t)=0;
 Mang(t)=0;
 
@@ -134,7 +132,7 @@ for g=1:1:Ne
     posicao{g,1}(:,1)=ones(Np,1)*Cm(g,1)+ raio{g,1}.*cos(teta{g,1});
     posicao{g,1}(:,2)=ones(Np,1)*Cm(g,2)+ raio{g,1}.*sin(teta{g,1});
     
-    momento(t)=momento(t)+norm(Dados.massa(g,1)*[Dados.velocidade(g,1) Dados.velocidade(g,2)]);
+    Mlinear=Mlinear+Dados.massa(g,1)*[Dados.velocidade(g,1) Dados.velocidade(g,2)];
     Mang(t)=Mang(t)+I(g,1)*Dados.W(g,1);
     
     %Para as bolas
@@ -148,7 +146,7 @@ for g=1:1:Ne
     
 end
 
- 
+ momento(t)=norm(Mlinear);
  campo=cell(N,M);   
  Dados.forcacont=zeros(Ne,2);
  Dados.torquecont=zeros(Ne,1);
@@ -173,30 +171,46 @@ end
 close(v)
 Mtotal=momento+Mang;
 figure(2)
-plot(times,momento,times,Mang);
+plot(times,momento,'LineWidth',3);
 title('Momento');
-legend('Momento linear','Momento angular');
+legend('Momento linear');
+xlabel('Tempo');
+ylabel('Momento');
+box on
+set(gca,'LineWidth',3);
+
+
 
 figure (3)
 box on
 set(gca,'LineWidth',3);
 plot(times,Ek,times,Eelas,times,Ecr, 'LineWidth',3);
 %set(gca, 'YLim', [ 0 9000]);
-xlabel('Times');
-ylabel('Energy');
+xlabel('Tempo');
+ylabel('Energia');
 ax = gca;
 ax.YAxis.Exponent = 2;
 ax.XAxis.Exponent = -3;
-legend('kinetic energy','elastic energy','rotational energy');
-title('Mechanical Energy')
+legend('Energia Cinética','Energia Elástica','Energia Rotacional');
+title('Energia Mecânica')
 ax = gca;
 ax.FontSize = 15;
 
 Emec=Ek+Ecr+Eelas;
-figure (4)
-plot(times,Emec);
-title('Energia mecânica');
-xlabel('Times');
-ylabel('Energy');
+
+figure(4)
+box on
+set(gca,'LineWidth',3);
+plot(times,Mang,'LineWidth',3);
+title('Momento Angular');
+legend('Momento angular');
+xlabel('Tempo');
+ylabel('Momento');
+
+%figure (4)
+%plot(times,Emec);
+%title('Energia mecânica');
+%xlabel('Times');
+%ylabel('Energy');
 
 

@@ -1,10 +1,13 @@
 function [ni]=pontointerno(X,Y,Xp,Yp)
-np=size(Xp,1);
+%(X,Y) coordenada do ponto
+%Xp- vetor com a coordenadas X
+%Yp- Vetor com a coordenada Y
+
+np=size(Xp,1);     %Nùmero de pontos
 Yp(np+1)=Yp(1);
 Xp(np+1)=Xp(1);
-ni=0;
-ordem_X=sort(Xp);
-ordem_Y=sort(Yp);
+ni=0;             %Número de interseções
+
 Xmax=max(Xp);
 Xmin=min(Xp);
 Ymax=max(Yp);
@@ -12,7 +15,7 @@ Ymin=min(Yp);
 
 if X<=Xmax & X>=Xmin & Y>=Ymin & Y<=Ymax
    
-    for i=1:1:np
+    for i=1:1:np           
       if Yp(i)~=Yp(i+1)                                   %Se a reta não for horizontal
         
         if Xp(i)~=Xp(i+1)&&(min(Yp(i),Yp(i+1)))<Y && Y<=(max(Yp(i),Yp(i+1)))  %Se o Y do ponto pertencer ao intervalo y do segmento de reta
